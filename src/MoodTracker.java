@@ -9,7 +9,7 @@ class MoodTracker extends HealthFeature {
     }
 
     public void logData() {
-        writeToFile("mood.csv", user.getName() + "," + mood);
+        FileManager.appendToFile("mood.csv", user.getName() + "," + mood);
     }
 
     public String getFeedback() {
@@ -17,12 +17,7 @@ class MoodTracker extends HealthFeature {
             case "happy" -> "Awesome! Keep spreading positivity!";
             case "sad" -> "Take a moment to relax. Try meditation or a walk.";
             case "stressed" -> "Consider journaling or breathing exercises.";
-            default -> "Mood logged. Keep tracking for better insights.";
+            default -> "Mood logged. Keep tracking!";
         };
-    }
-    private void writeToFile(String filename, String data) {
-        try (FileWriter fw = new FileWriter(filename, true)) {
-            fw.write(data + "\n");
-        } catch (IOException e) { e.printStackTrace(); }
     }
 }
