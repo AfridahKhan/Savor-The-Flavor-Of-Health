@@ -12,7 +12,7 @@ class FeatureFactory {
             case "mood":
                 return new MoodTracker(user, (String) value);
             case "meal":
-                return new MealTracker(user, (String) value);
+                return new MeditationTracker(user, (int) value);
             default:
                 return new BMITracker(user); // Default fallback
         }
