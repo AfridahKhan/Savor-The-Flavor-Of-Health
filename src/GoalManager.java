@@ -64,7 +64,7 @@ public class GoalManager {
         }
     }
 
-  
+
     public static void showCurrentGoal(String username, String feature) {
         int currentGoal = getGoal(username, feature);
         System.out.println("Current goal for " + feature + ": " + currentGoal);
