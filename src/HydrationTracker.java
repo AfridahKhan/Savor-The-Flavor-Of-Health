@@ -2,6 +2,7 @@ import java.io.*;
 
 public class HydrationTracker extends HealthFeature{
     private int glasses;
+    private final int goal = 8;
 
     public HydrationTracker(User user, int glasses) {
         super(user);
@@ -9,17 +10,14 @@ public class HydrationTracker extends HealthFeature{
     }
 
     public void logData() {
-        writeToFile("hydration.csv", user.getName() + "," + glasses);
+        FileManager.appendToFile("hydration.csv", user.getName() + "," + glasses);
+        FileManager.updateStreak(user.getName(), "hydration", glasses >= goal);
     }
 
     public String getFeedback() {
-        if (glasses >= 8) return "Well hydrated! Keep it up!";
-        return "Try to drink at least 8 glasses of water daily.";
-    }
-
-    private void writeToFile(String filename, String data) {
-        try (FileWriter fw = new FileWriter(filename, true)) {
-            fw.write(data + "\n");
-        } catch (IOException e) { e.printStackTrace(); }
+        int streak = FileManager.getStreak(user.getName(), "hydration");
+        return (glasses >= goal ?
+                "Great hydration today! 💧 Current streak: " + streak + " days." :
+                "Try to reach 8 glasses! Current streak reset.") ;
     }
 }
