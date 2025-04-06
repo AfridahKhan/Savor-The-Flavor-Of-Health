@@ -8,7 +8,7 @@ public class HealthTracker {
         System.out.print("Enter your name: ");
         String name = scanner.nextLine();
 
-        User user = User.loginOrRegister(name, scanner);
+        User user = UserService.loginOrRegister(name, scanner);
 
         boolean running = true;
         while (running) {
