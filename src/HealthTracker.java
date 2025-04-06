@@ -1,74 +1,72 @@
-import java.util.Scanner;
-
+import java.util.*;
 
 public class HealthTracker {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("====== Welcome to Savor the Flavor of Health ======");
+
+        // User Login/Register
         System.out.print("Enter your name: ");
         String name = scanner.nextLine();
-
         User user = UserService.loginOrRegister(name, scanner);
 
-        boolean running = true;
-        while (running) {
-            System.out.println("\nSelect an option to track:");
-            System.out.println("1. Steps");
-            System.out.println("2. Sleep");
-            System.out.println("3. Water");
-            System.out.println("4. BMI");
-            System.out.println("5. Mood");
-            System.out.println("6. Meditation");
-            System.out.println("7. Exit");
-
-            System.out.print("Your choice: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine();
-
-            Trackable feature = null;
-
-            switch (choice) {
-                case 1 -> {
-                    System.out.print("Enter number of steps walked: ");
-                    int steps = scanner.nextInt();
-                    scanner.nextLine();
-                    feature = FeatureFactory.createFeature("steps", user, steps);
+        // Ask user if they want to update goals
+        System.out.print("Do you want to update any goals? (yes/no): ");
+        if (scanner.nextLine().equalsIgnoreCase("yes")) {
+            List<String> goalTypes = List.of("steps", "sleep", "water", "meditation");
+            for (String goalType : goalTypes) {
+                System.out.print("Do you want to update your " + goalType + " goal? (yes/no): ");
+                if (scanner.nextLine().equalsIgnoreCase("yes")) {
+                    System.out.print("Enter new goal for " + goalType + ": ");
+                    try {
+                        int newGoal = Integer.parseInt(scanner.nextLine());
+                        if (newGoal > 0) {
+                            GoalManager.setGoal(user.getName(), goalType, newGoal);
+                            System.out.println(goalType + " goal updated to " + newGoal);
+                        } else {
+                            System.out.println("Goal must be a positive number.");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid number input.");
+                    }
                 }
-                case 2 -> {
-                    System.out.print("Enter hours of sleep: ");
-                    double sleep = scanner.nextDouble();
-                    scanner.nextLine();
-                    feature = FeatureFactory.createFeature("sleep", user, sleep);
-                }
-                case 3 -> {
-                    System.out.print("Enter number of water glasses: ");
-                    int glasses = scanner.nextInt();
-                    scanner.nextLine();
-                    feature = FeatureFactory.createFeature("water", user, glasses);
-                }
-                case 4 -> feature = FeatureFactory.createFeature("bmi", user, null);
-                case 5 -> {
-                    System.out.print("Enter your mood (happy/sad/stressed/etc): ");
-                    String mood = scanner.nextLine();
-                    feature = FeatureFactory.createFeature("mood", user, mood);
-                }
-                case 6 -> {
-                    System.out.print("Enter minutes meditated: ");
-                    int mins = scanner.nextInt();
-                    scanner.nextLine();
-                    feature = FeatureFactory.createFeature("meditation", user, mins);
-                }
-                case 7 -> {
-                    System.out.println("Goodbye! Stay healthy and mindful!");
-                    running = false;
-                }
-                default -> System.out.println("Invalid choice. Try again.");
             }
+        }
 
-            if (feature != null) {
-                feature.logData();
-                System.out.println(feature.getFeedback());
-            }
+        List<Trackable> features = new ArrayList<>();
+
+        // Step Tracking
+        System.out.print("\nEnter how many steps you walked today: ");
+        int steps = Integer.parseInt(scanner.nextLine());
+        features.add(FeatureFactory.createFeature("steps", user, steps));
+
+        // Sleep Tracking
+        System.out.print("Enter how many hours you slept: ");
+        double sleep = Double.parseDouble(scanner.nextLine());
+        features.add(FeatureFactory.createFeature("sleep", user, sleep));
+
+        // Hydration Tracking
+        System.out.print("How many glasses of water did you drink?: ");
+        int water = Integer.parseInt(scanner.nextLine());
+        features.add(FeatureFactory.createFeature("water", user, water));
+
+        // Mood Tracking
+        System.out.print("How are you feeling? (happy/sad/stressed/other): ");
+        String mood = scanner.nextLine();
+        features.add(FeatureFactory.createFeature("mood", user, mood));
+
+        // Meditation Tracking
+        System.out.print("How many minutes did you meditate today?: ");
+        int meditation = Integer.parseInt(scanner.nextLine());
+        features.add(FeatureFactory.createFeature("meditation", user, meditation));
+
+        // BMI (auto-calculated)
+        features.add(FeatureFactory.createFeature("bmi", user, null));
+
+        // Show feedback for each feature
+        System.out.println("\n--- Health Feedback ---");
+        for (Trackable feature : features) {
+            feature.logData();
+            System.out.println(feature.getFeedback());
         }
 
         scanner.close();
