@@ -11,10 +11,10 @@ class FeatureFactory {
                 return new BMITracker(user);
             case "mood":
                 return new MoodTracker(user, (String) value);
-            case "meal":
+            case "meditation":
                 return new MeditationTracker(user, (int) value);
             default:
-                return new BMITracker(user); // Default fallback
+                throw new IllegalArgumentException("Invalid feature type: " + type);
         }
     }
 }
