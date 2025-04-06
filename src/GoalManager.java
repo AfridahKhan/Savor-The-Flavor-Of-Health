@@ -2,60 +2,72 @@ import java.io.*;
 import java.util.*;
 
 public class GoalManager {
-    private static final String GOAL_FILE = "goals.csv";
-    private static final Map<String, Integer> defaultGoals = Map.of(
+    private static final String FILE_NAME = "goals.csv";
+
+
+    private static final Map<String, Integer> DEFAULT_GOALS = Map.of(
             "steps", 8000,
             "sleep", 7,
             "water", 8,
             "meditation", 15
     );
 
-    // Load saved goals or return default
-    public static int getGoal(String username, String type) {
-        try (BufferedReader br = new BufferedReader(new FileReader(GOAL_FILE))) {
+
+    public static int getGoal(String username, String feature) {
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length == 3 && parts[0].equalsIgnoreCase(username) && parts[1].equalsIgnoreCase(type)) {
+                if (parts.length == 3 && parts[0].equalsIgnoreCase(username) && parts[1].equalsIgnoreCase(feature)) {
                     return Integer.parseInt(parts[2]);
                 }
             }
-        } catch (IOException ignored) {}
-        return defaultGoals.getOrDefault(type, 0);
+        } catch (IOException e) {
+
+        }
+
+        return DEFAULT_GOALS.getOrDefault(feature.toLowerCase(), 0);
     }
 
-    // Update a specific goal for a user
-    public static void setGoal(String username, String type, int newGoal) {
-        File tempFile = new File("temp_goals.csv");
-        File originalFile = new File(GOAL_FILE);
-        boolean found = false;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(GOAL_FILE));
-             FileWriter fw = new FileWriter(tempFile)) {
+    public static void setGoal(String username, String feature, int value) {
+        File file = new File(FILE_NAME);
+        List<String> updatedLines = new ArrayList<>();
+        boolean updated = false;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts[0].equalsIgnoreCase(username) && parts[1].equalsIgnoreCase(type)) {
-                    fw.write(username + "," + type + "," + newGoal + "\n");
-                    found = true;
+                if (parts.length == 3 && parts[0].equalsIgnoreCase(username) && parts[1].equalsIgnoreCase(feature)) {
+                    updatedLines.add(username + "," + feature + "," + value);
+                    updated = true;
                 } else {
-                    fw.write(line + "\n");
+                    updatedLines.add(line);
                 }
             }
         } catch (IOException e) {
-            // File may not exist yet; skip
+
         }
 
-        if (!found) {
-            try (FileWriter fw = new FileWriter(tempFile, true)) {
-                fw.write(username + "," + type + "," + newGoal + "\n");
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (!updated) {
+            updatedLines.add(username + "," + feature + "," + value);
+        }
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+            for (String updatedLine : updatedLines) {
+                bw.write(updatedLine);
+                bw.newLine();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
 
-        // Replace old file with new
-        if (originalFile.exists()) originalFile.delete();
-        tempFile.renameTo(originalFile);
+  
+    public static void showCurrentGoal(String username, String feature) {
+        int currentGoal = getGoal(username, feature);
+        System.out.println("Current goal for " + feature + ": " + currentGoal);
     }
 }
+
