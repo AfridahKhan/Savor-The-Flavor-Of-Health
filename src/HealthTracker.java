@@ -1,13 +1,13 @@
 import java.util.*;
 
-public class HealthTrackerApp {
+public class HealthTracker{
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
         // --- User Login/Register ---
         System.out.print("Enter your name: ");
         String name = scanner.nextLine();
-        User user = User.loginOrRegister(name, scanner);
+        User user = UserService.loginOrRegister(name, scanner);
 
         // --- Goal Management ---
         System.out.print("Do you want to update any goals? (yes/no): ");
