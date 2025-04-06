@@ -1,21 +1,26 @@
-class SleepTracker extends HealthFeature {
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+public class SleepTracker extends HealthFeature {
     private double hours;
-    private final double goal = 7.0;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public SleepTracker(User user, double hours) {
         super(user);
         this.hours = hours;
     }
 
+    @Override
     public void logData() {
-        FileManager.appendToFile("sleep.csv", user.getName() + "," + hours);
-        StreakManager.updateStreak(user.getName(), "sleep", hours >= goal);
+        String line = user.getName() + "," + LocalDate.now().format(FORMATTER) + "," + hours;
+        FileManager.appendToFile("sleep.csv", line);
     }
 
+    @Override
     public String getFeedback() {
-        int streak = StreakManager.getStreak(user.getName(), "sleep");
-        return (hours >= goal ?
-                "Well rested! 😴 Sleep streak: " + streak + " days." :
-                "Try to sleep at least 7 hours. Sleep streak reset.");
+        int goal = GoalManager.getGoal(user.getName(), "sleep");
+        return hours >= goal ? "Well rested! Keep it up!" : "Try getting more sleep for better health.";
     }
 }
