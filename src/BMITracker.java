@@ -1,5 +1,3 @@
-import java.io.*;
-
 class BMITracker extends HealthFeature {
     public BMITracker(User user) {
         super(user);

@@ -1,5 +1,3 @@
-import java.io.*;
-
 class MoodTracker extends HealthFeature {
     private String mood;
 

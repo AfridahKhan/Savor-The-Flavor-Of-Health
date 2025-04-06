@@ -23,7 +23,7 @@ public class HealthTracker {
 
             System.out.print("Your choice: ");
             int choice = scanner.nextInt();
-            scanner.nextLine(); 
+            scanner.nextLine();
 
             Trackable feature = null;
 
