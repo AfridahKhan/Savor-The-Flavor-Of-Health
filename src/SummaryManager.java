@@ -23,11 +23,11 @@ public class SummaryManager {
             System.out.println("Days Met Goal: " + daysMetGoal + " out of " + DAYS_IN_WEEK);
 
             if (daysMetGoal >= 5) {
-                System.out.println("✅ You're doing great! Keep up the streak!");
+                System.out.println("You're doing great! Keep up the streak!");
             } else if (daysMetGoal >= 3) {
-                System.out.println("⚠️ Decent effort! Try to push a bit more!");
+                System.out.println("Decent effort! Try to push a bit more!");
             } else {
-                System.out.println("❌ Let's aim higher next week!");
+                System.out.println("Let's aim higher next week!");
             }
         }
     }
