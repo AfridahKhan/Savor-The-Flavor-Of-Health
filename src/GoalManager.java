@@ -4,7 +4,6 @@ import java.util.*;
 public class GoalManager {
     private static final String FILE_NAME = "goals.csv";
 
-    // Default goals for features
     private static final Map<String, Integer> DEFAULT_GOALS = Map.of(
             "steps", 8000,
             "sleep", 7,
@@ -12,7 +11,6 @@ public class GoalManager {
             "meditation", 15
     );
 
-    // Get the goal for a specific user and feature
     public static int getGoal(String username, String feature) {
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
             String line;
@@ -23,13 +21,13 @@ public class GoalManager {
                 }
             }
         } catch (IOException e) {
-            // File may not exist yet — fallback to default
+
         }
 
         return DEFAULT_GOALS.getOrDefault(feature.toLowerCase(), 0);
     }
 
-    // Set or update goal for a user and feature
+
     public static void setGoal(String username, String feature, int value) {
         File file = new File(FILE_NAME);
         List<String> updatedLines = new ArrayList<>();
@@ -47,7 +45,7 @@ public class GoalManager {
                 }
             }
         } catch (IOException e) {
-            // If file doesn't exist, start fresh
+
         }
 
         if (!updated) {
@@ -64,7 +62,7 @@ public class GoalManager {
         }
     }
 
-    // Show current goal (used before asking user to change)
+
     public static void showCurrentGoal(String username, String feature) {
         int currentGoal = getGoal(username, feature);
         System.out.println("Current goal for " + feature + ": " + currentGoal);
