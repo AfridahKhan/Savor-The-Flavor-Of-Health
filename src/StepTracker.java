@@ -2,6 +2,7 @@ import java.io.*;
 
 class StepTracker extends HealthFeature {
     private int steps;
+    private final int goal = 8000;
 
     public StepTracker(User user, int steps) {
         super(user);
@@ -10,10 +11,15 @@ class StepTracker extends HealthFeature {
 
     public void logData() {
         FileManager.appendToFile("steps.csv", user.getName() + "," + steps);
+        FileManager.updateStreak(user.getName(), "steps", steps >= goal);
     }
 
     public String getFeedback() {
-        return steps >= 8000 ? "Great job! You met your daily steps goal!" : "Try to walk a bit more today.";
+        int streak = FileManager.getStreak(user.getName(), "steps");
+        return (steps >= goal ?
+                "You crushed your step goal! 🚶‍♀️ Streak: " + streak + " days." :
+                "Walk a bit more! Your streak has been reset.");
     }
 }
+
 
