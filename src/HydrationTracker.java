@@ -1,21 +1,24 @@
-public class HydrationTracker extends HealthFeature{
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+public class HydrationTracker extends HealthFeature {
     private int glasses;
-    private final int goal = 8;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public HydrationTracker(User user, int glasses) {
         super(user);
         this.glasses = glasses;
     }
 
+    @Override
     public void logData() {
-        FileManager.appendToFile("hydration.csv", user.getName() + "," + glasses);
-        StreakManager.updateStreak(user.getName(), "hydration", glasses >= goal);
+        String line = user.getName() + "," + LocalDate.now().format(FORMATTER) + "," + glasses;
+        FileManager.appendToFile("water.csv", line);
     }
 
+    @Override
     public String getFeedback() {
-        int streak = StreakManager.getStreak(user.getName(), "hydration");
-        return (glasses >= goal ?
-                "Great hydration today! 💧 Current streak: " + streak + " days." :
-                "Try to reach 8 glasses! Current streak reset.") ;
+        int goal = GoalManager.getGoal(user.getName(), "water");
+        return glasses >= goal ? "You're well hydrated!" : "Drink more water to stay healthy!";
     }
 }
