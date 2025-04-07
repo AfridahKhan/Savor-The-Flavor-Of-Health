@@ -1,6 +1,9 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 public class MeditationTracker extends HealthFeature {
     private int minutes;
-    private final int goal = 10; // Daily meditation goal in minutes
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public MeditationTracker(User user, int minutes) {
         super(user);
@@ -9,18 +12,14 @@ public class MeditationTracker extends HealthFeature {
 
     @Override
     public void logData() {
-
-        FileManager.appendToFile("meditation.csv", user.getName() + "," + minutes);
-        StreakManager.updateStreak(user.getName(), "meditation", minutes >= goal);
+        String line = user.getName() + "," + LocalDate.now().format(FORMATTER) + "," + minutes;
+        FileManager.appendToFile("meditation.csv", line);
     }
 
     @Override
     public String getFeedback() {
-        String base = (minutes >= goal)
-                ? "Nice work! You're cultivating calmness."
-                : "Try to meditate a bit longer for full benefit.";
-
-        int streak = StreakManager.getStreak(user.getName(), "meditation");
-        return base + " Current meditation streak: " + streak + " day(s).";
+        int goal = GoalManager.getGoal(user.getName(), "meditation");
+        return minutes >= goal ? "You're calm and focused!" : "Try meditating more to reduce stress.";
     }
 }
+
